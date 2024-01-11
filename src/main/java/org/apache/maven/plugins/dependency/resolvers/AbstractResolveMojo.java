@@ -1,5 +1,3 @@
-package org.apache.maven.plugins.dependency.resolvers;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -9,7 +7,7 @@ package org.apache.maven.plugins.dependency.resolvers;
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,65 +16,53 @@ package org.apache.maven.plugins.dependency.resolvers;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.plugins.dependency.resolvers;
 
 import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.dependency.fromDependencies.AbstractDependencyFilterMojo;
 import org.apache.maven.plugins.dependency.utils.DependencyUtil;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.shared.artifact.filter.collection.ArtifactIdFilter;
 import org.apache.maven.shared.artifact.filter.collection.ClassifierFilter;
 import org.apache.maven.shared.artifact.filter.collection.FilterArtifacts;
 import org.apache.maven.shared.artifact.filter.collection.GroupIdFilter;
+import org.apache.maven.shared.artifact.filter.collection.ScopeFilter;
 import org.apache.maven.shared.artifact.filter.collection.TypeFilter;
-import org.apache.maven.shared.artifact.resolve.ArtifactResult;
-import org.apache.maven.shared.dependencies.DependableCoordinate;
-import org.apache.maven.shared.dependencies.resolve.DependencyResolverException;
+import org.apache.maven.shared.transfer.artifact.resolve.ArtifactResult;
+import org.apache.maven.shared.transfer.dependencies.DependableCoordinate;
+import org.apache.maven.shared.transfer.dependencies.resolve.DependencyResolverException;
 
 /**
  * @author <a href="mailto:brianf@apache.org">Brian Fox</a>
  */
-public abstract class AbstractResolveMojo
-    extends AbstractDependencyFilterMojo
-{
+public abstract class AbstractResolveMojo extends AbstractDependencyFilterMojo {
     /**
-     * If specified, this parameter will cause the dependencies to be written to the path specified, instead of writing
-     * to the console.
+     * If specified, this parameter causes the dependencies to be written to the path specified instead of
+     * the console.
      *
      * @since 2.0
      */
-    @Parameter( property = "outputFile" )
+    @Parameter(property = "outputFile")
     protected File outputFile;
-
-    /**
-     * This method resolves the dependency artifacts from the project.
-     *
-     * @param theProject The POM.
-     * @return resolved set of dependency artifacts.
-     * @throws ArtifactResolutionException
-     * @throws ArtifactNotFoundException
-     * @throws InvalidDependencyVersionException
-     */
 
     /**
      * Whether to append outputs into the output file or overwrite it.
      *
      * @since 2.2
      */
-    @Parameter( property = "appendOutput", defaultValue = "false" )
+    @Parameter(property = "appendOutput", defaultValue = "false")
     protected boolean appendOutput;
 
     /**
-     * Don't resolve plugins that are in the current reactor. Only works for plugins at the moment.
+     * Don't resolve plugins that are in the current reactor.
      *
      * @since 2.7
      */
-    @Parameter( property = "excludeReactor", defaultValue = "true" )
+    @Parameter(property = "excludeReactor", defaultValue = "true")
     protected boolean excludeReactor;
 
     /**
@@ -94,52 +80,33 @@ public abstract class AbstractResolveMojo
     /**
      * @return {@link FilterArtifacts}
      */
-    protected FilterArtifacts getPluginArtifactsFilter()
-    {
-        if ( excludeReactor )
-        {
-            final StringBuilder exAids = new StringBuilder();
-            if ( this.excludeArtifactIds != null )
-            {
-                exAids.append( this.excludeArtifactIds );
-            }
-
-            for ( final MavenProject rp : reactorProjects )
-            {
-                if ( !"maven-plugin".equals( rp.getPackaging() ) )
-                {
-                    continue;
-                }
-
-                if ( exAids.length() > 0 )
-                {
-                    exAids.append( "," );
-                }
-
-                exAids.append( rp.getArtifactId() );
-            }
-
-            this.excludeArtifactIds = exAids.toString();
-        }
-
+    protected FilterArtifacts getArtifactsFilter() {
         final FilterArtifacts filter = new FilterArtifacts();
 
-        //CHECKSTYLE_OFF: LineLength
-        filter.addFilter( new org.apache.maven.shared.artifact.filter.collection.ScopeFilter( DependencyUtil.cleanToBeTokenizedString( this.includeScope ),
-                                                                                              DependencyUtil.cleanToBeTokenizedString( this.excludeScope ) ) );
-        //CHECKSTYLE_ON: LineLength
+        if (excludeReactor) {
 
-        filter.addFilter( new TypeFilter( DependencyUtil.cleanToBeTokenizedString( this.includeTypes ),
-                                          DependencyUtil.cleanToBeTokenizedString( this.excludeTypes ) ) );
+            filter.addFilter(new ExcludeReactorProjectsArtifactFilter(reactorProjects, getLog()));
+        }
 
-        filter.addFilter( new ClassifierFilter( DependencyUtil.cleanToBeTokenizedString( this.includeClassifiers ),
-                                                DependencyUtil.cleanToBeTokenizedString( this.excludeClassifiers ) ) );
+        filter.addFilter(new ScopeFilter(
+                DependencyUtil.cleanToBeTokenizedString(this.includeScope),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeScope)));
 
-        filter.addFilter( new GroupIdFilter( DependencyUtil.cleanToBeTokenizedString( this.includeGroupIds ),
-                                             DependencyUtil.cleanToBeTokenizedString( this.excludeGroupIds ) ) );
+        filter.addFilter(new TypeFilter(
+                DependencyUtil.cleanToBeTokenizedString(this.includeTypes),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeTypes)));
 
-        filter.addFilter( new ArtifactIdFilter( DependencyUtil.cleanToBeTokenizedString( this.includeArtifactIds ),
-                                                DependencyUtil.cleanToBeTokenizedString( this.excludeArtifactIds ) ) );
+        filter.addFilter(new ClassifierFilter(
+                DependencyUtil.cleanToBeTokenizedString(this.includeClassifiers),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeClassifiers)));
+
+        filter.addFilter(new GroupIdFilter(
+                DependencyUtil.cleanToBeTokenizedString(this.includeGroupIds),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeGroupIds)));
+
+        filter.addFilter(new ArtifactIdFilter(
+                DependencyUtil.cleanToBeTokenizedString(this.includeArtifactIds),
+                DependencyUtil.cleanToBeTokenizedString(this.excludeArtifactIds)));
 
         return filter;
     }
@@ -151,22 +118,19 @@ public abstract class AbstractResolveMojo
      * @return resolved set of dependencies
      * @throws DependencyResolverException in case of error while resolving artifacts.
      */
-    protected Set<Artifact> resolveArtifactDependencies( final DependableCoordinate artifact )
-        throws DependencyResolverException
-    {
+    protected Set<Artifact> resolveArtifactDependencies(final DependableCoordinate artifact)
+            throws DependencyResolverException {
         ProjectBuildingRequest buildingRequest = newResolveArtifactProjectBuildingRequest();
 
         Iterable<ArtifactResult> artifactResults =
-            getDependencyResolver().resolveDependencies( buildingRequest, artifact, null );
+                getDependencyResolver().resolveDependencies(buildingRequest, artifact, null);
 
-        Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+        Set<Artifact> artifacts = new LinkedHashSet<>();
 
-        for ( final ArtifactResult artifactResult : artifactResults )
-        {
-            artifacts.add( artifactResult.getArtifact() );
+        for (final ArtifactResult artifactResult : artifactResults) {
+            artifacts.add(artifactResult.getArtifact());
         }
 
         return artifacts;
-
     }
 }

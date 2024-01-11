@@ -4,27 +4,33 @@ Priority: optional
 Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>
 Build-Depends:
- debhelper (>= 11~),
+ debhelper-compat (= 13),
  default-jdk,
  junit4,
- libcommons-collections3-java,
- libmaven-artifact-transfer-java,
+ libcommons-collections4-java,
+ libjetty9-java,
+ libmaven-artifact-transfer-java (>= 0.13),
  libmaven-common-artifact-filters-java,
  libmaven-dependency-analyzer-java (>= 1.7),
- libmaven-dependency-tree-java (>= 3.0),
+ libmaven-dependency-tree-java (>= 3.2.1),
+ libeclipse-sisu-maven-plugin-java,
  libmaven-file-management-java,
+ libmaven-parent-java,
  libmaven-plugin-testing-java,
  libmaven-plugin-tools-java,
  libmaven-reporting-api-java,
  libmaven-reporting-impl-java,
+ libmaven-resolver-transport-http-java,
  libmaven3-core-java,
+ libmockito-java,
+ libmodello-maven-plugin-java,
  libplexus-archiver-java,
  libplexus-container-default-java (>= 1.7.1-7~),
  libplexus-io-java,
  libplexus-utils2-java,
  libwagon-http-java,
  maven-debian-helper (>= 1.4)
-Standards-Version: 4.1.5
+Standards-Version: 4.6.2
 Vcs-Git: https://salsa.debian.org/java-team/maven-dependency-plugin.git
 Vcs-Browser: https://salsa.debian.org/java-team/maven-dependency-plugin
 Homepage: http://maven.apache.org/plugins/maven-dependency-plugin/
