@@ -19,8 +19,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
   <body>
     <menu name="Overview">
@@ -37,15 +36,15 @@ under the License.
       <item name="Copying project dependencies" href="examples/copying-project-dependencies.html"/>
       <item name="Unpacking specific artifacts" href="examples/unpacking-artifacts.html"/>
       <item name="Unpacking the project dependencies" href="examples/unpacking-project-dependencies.html"/>
+      <item name="Rewriting target path and file name" href="examples/unpacking-filemapper.html"/>
       <item name="Using project dependencies' sources" href="examples/using-dependencies-sources.html"/>
       <item name="Failing the build on dependency analysis warnings" href="examples/failing-the-build-on-dependency-analysis-warnings.html"/>
       <item name="Exclude Dependencies from Dependency Analysis" href="examples/exclude-dependencies-from-dependency-analysis.html"/>
       <item name="Filtering the dependency tree" href="examples/filtering-the-dependency-tree.html"/>
-      <item name="Resolving conflicts using the dependency tree" href="examples/resolving-conflicts-using-the-dependency-tree.html"/>
       <item name="Purging local repository dependencies" href="examples/purging-local-repository.html"/>
     </menu>
     <menu name="Resources">
-      <item name="Dependency Mechanism" href="/guides/introduction/introduction-to-dependency-mechanism.html"/>
+      <item name="Dependency Mechanism" href="../../guides/introduction/introduction-to-dependency-mechanism.html"/>
     </menu>
   </body>
 </project>

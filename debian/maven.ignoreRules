@@ -15,6 +15,7 @@
 #   junit junit jar s/3\\..*/3.x/
 
 org.apache.maven maven-artifact-manager
+org.apache.maven.plugins maven-checkstyle-plugin
 org.apache.maven.plugins maven-enforcer-plugin
 org.apache.rat apache-rat-plugin
 org.sonatype.aether aether-connector-wagon
